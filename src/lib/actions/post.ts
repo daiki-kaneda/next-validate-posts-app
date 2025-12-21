@@ -7,14 +7,18 @@ import { revalidatePath } from "next/cache";
 export type FormState = {
     // キー名に?をつけることでオプショナルにしている
     errors?: {
-        title?: string[],
-        body?: string[]
-    },
+        title?: {
+            errors: string[];
+        };
+        body?: {
+            errors: string[];
+        };
+    }
     message?: string | null,
     success?: boolean
 }
 
-export async function createPostAction(prevState: FormState, formData: FormData) {
+export async function createPostAction(prevState: FormState, formData: FormData): Promise<FormState> {
     const validatedFields = CreatePostSchema.safeParse({
         title: formData.get('title'),
         body: formData.get('body')
@@ -22,7 +26,8 @@ export async function createPostAction(prevState: FormState, formData: FormData)
 
     if (!validatedFields.success) {
         return {
-            errors: z.treeifyError(validatedFields.error),
+            errors: z.treeifyError(validatedFields.error)
+                .properties,
             message: "入力内容に不備があります。",
             success: false
         };
