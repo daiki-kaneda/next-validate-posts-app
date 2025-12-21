@@ -7,7 +7,7 @@ export const PostSchema = z.object({
     body: z.string().min(1, "本文は必須です。"),
 });
 
-export const CreatePostSchema = PostSchema.omit({ id: true });
+export const CreatePostSchema = PostSchema.omit({userId:true, id: true});
 
 // 型の抽出
 export type Post = z.infer<typeof PostSchema>;
