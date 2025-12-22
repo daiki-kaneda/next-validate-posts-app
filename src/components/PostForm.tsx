@@ -16,7 +16,7 @@ export default function PostForm() {
     );
 
     return (
-        <form action={formAction} className="space-y-4 max-w-md p-4 border rounded-lg">
+        <form action={formAction} className="space-y-4 max-w-md mx-auto p-4 border rounded-lg">
             <div>
                 <label htmlFor="title" className="block font-bold">タイトル</label>
                 <input
@@ -53,11 +53,11 @@ export default function PostForm() {
             </button>
 
             {/*成功、失敗メッセージ*/}
-            {state.message && (
+            {!isPending ? (state.message && (
                 <p className={`p-2 rounded ${state.success ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
                     {state.message}
                 </p>
-            )}
+            )) : null}
         </form>
     );
 
