@@ -1,7 +1,7 @@
 "use server";
 
 import { z } from "zod";
-import { CreatePostSchema } from "../schemas/post";
+import { CreatePostSchema, Post, PostSchema } from "../schemas/post";
 import { revalidatePath } from "next/cache";
 
 export type FormState = {
@@ -64,4 +64,27 @@ export async function createPostAction(prevState: FormState, formData: FormData)
             success: false,
         };
     }
+}
+
+export async function getPosts(): Promise<Post[]> {
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts",
+        {
+            next: { revalidate: 60 }
+        }
+    );
+
+    if (!response.ok) {
+        throw new Error("Failed to fetch");
+    }
+
+    const rawData = await response.json();
+
+    const result = z.array(PostSchema).safeParse(rawData);
+
+    if (!result.success) {
+        console.log(result.error);
+        return [];
+    }
+
+    return result.data.slice(0, 5);
 }
